@@ -1,0 +1,27 @@
+services:
+  vendas_postgresql:
+    container_name: vendas_postgresql
+    image: postgres:18
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "123"
+      POSTGRES_DB: unifunec
+    ports:
+      - "5432:5432"
+    volumes:
+      - vendas_postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    networks:
+      - vendas_network
+
+volumes:
+  vendas_postgres_data:
+
+networks:
+  vendas_network:
+    driver: bridge

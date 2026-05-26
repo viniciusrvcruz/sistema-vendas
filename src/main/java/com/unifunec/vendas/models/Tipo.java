@@ -1,0 +1,50 @@
+package com.unifunec.vendas.models;
+
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class Tipo {
+    // tipo = {codtipo, nometipo} - FAZER
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer codtipo;
+
+    @Column
+    private String nometipo;
+
+  
+    public Integer getCodtipo() {
+        return codtipo;
+    }
+
+    public void setCodtipo(Integer codtipo) {
+        this.codtipo = codtipo;
+    }
+
+    public String getNometipo() {
+        return nometipo;
+    }
+
+    public void setNometipo(String nometipo) {
+        this.nometipo = nometipo;
+    }
+
+    public Tipo(Integer codtipo, String nometipo) {
+        this.codtipo = codtipo;
+        this.nometipo = nometipo;
+    }
+
+    public Tipo() {
+    }
+
+    
+}

@@ -12,8 +12,6 @@ import jakarta.persistence.Id;
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Tipo {
-    // tipo = {codtipo, nometipo} - FAZER
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codtipo;
@@ -21,7 +19,13 @@ public class Tipo {
     @Column
     private String nometipo;
 
-  
+    public Tipo() {
+    }
+
+    public Tipo(String nometipo) {
+        this.nometipo = nometipo;
+    }
+
     public Integer getCodtipo() {
         return codtipo;
     }
@@ -37,14 +41,4 @@ public class Tipo {
     public void setNometipo(String nometipo) {
         this.nometipo = nometipo;
     }
-
-    public Tipo(Integer codtipo, String nometipo) {
-        this.codtipo = codtipo;
-        this.nometipo = nometipo;
-    }
-
-    public Tipo() {
-    }
-
-    
 }

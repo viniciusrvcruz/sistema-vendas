@@ -40,6 +40,24 @@ public class Produto {
     @Column
     private Double valor;
 
+    public Produto() {}
+
+    public Produto(
+        String nomeproduto,
+        Tipo tipo,
+        Marca marca,
+        Fornecedor fornecedor,
+        Double quantidade,
+        Double valor
+    ) {
+        this.nomeproduto = nomeproduto;
+        this.tipo = tipo;
+        this.marca = marca;
+        this.fornecedor = fornecedor;
+        this.quantidade = quantidade;
+        this.valor = valor;
+    }
+
     public Long getCodproduto() {
         return codproduto;
     }
@@ -95,22 +113,4 @@ public class Produto {
     public void setValor(Double valor) {
         this.valor = valor;
     }
-
-    public Produto(Long codproduto, String nomeproduto, Tipo tipo, Marca marca, Fornecedor fornecedor,
-            Double quantidade, Double valor) {
-        this.codproduto = codproduto;
-        this.nomeproduto = nomeproduto;
-        this.tipo = tipo;
-        this.marca = marca;
-        this.fornecedor = fornecedor;
-        this.quantidade = quantidade;
-        this.valor = valor;
-    }
-
-    public Produto() {
-    }
-
-
-    
-    
 }

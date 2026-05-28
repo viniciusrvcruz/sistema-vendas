@@ -5,6 +5,7 @@ import com.unifunec.vendas.models.Fornecedor;
 import com.unifunec.vendas.models.Marca;
 import com.unifunec.vendas.models.Produto;
 import com.unifunec.vendas.models.Tipo;
+import com.unifunec.vendas.repository.CompraProdutoRepository;
 import com.unifunec.vendas.repository.ProdutoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.List;
 @Service
 public class ProdutoService {
     ProdutoRepository produtoRepository;
+    CompraProdutoRepository compraProdutoRepository;
 
     TipoService tipoService;
     MarcaService marcaService;
@@ -22,11 +24,13 @@ public class ProdutoService {
 
     public ProdutoService(
         ProdutoRepository produtoRepository,
+        CompraProdutoRepository compraProdutoRepository,
         TipoService tipoService,
         MarcaService marcaService,
         FornecedorService fornecedorService
     ) {
         this.produtoRepository = produtoRepository;
+        this.compraProdutoRepository = compraProdutoRepository;
         this.tipoService = tipoService;
         this.marcaService = marcaService;
         this.fornecedorService = fornecedorService;
@@ -36,12 +40,20 @@ public class ProdutoService {
         return produtoRepository.findAll();
     }
 
-    public Produto getProdutoId(Integer id) {
+    public Produto getProdutoId(Long id) {
         return produtoRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado"));
     }
 
-    public void apagaProdutoId(Integer id) {
+    public void apagaProdutoId(Long id) {
+        getProdutoId(id);
+
+        if (compraProdutoRepository.existsByProduto_Codproduto(id)) {
+            throw new ResponseStatusException(
+                HttpStatus.CONFLICT,
+                "Não é possível excluir o produto pois existem itens vinculados em compras");
+        }
+
         produtoRepository.deleteById(id);
     }
 
@@ -53,7 +65,7 @@ public class ProdutoService {
         return produtoRepository.save(produto);
     }
 
-    public Produto atualizaProduto(ProdutoForm produtoForm, Integer id) {
+    public Produto atualizaProduto(ProdutoForm produtoForm, Long id) {
         Produto produto = getProdutoId(id);
 
         preencherProduto(produto, produtoForm);

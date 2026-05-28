@@ -2,7 +2,7 @@
 
 ```sh
 docker compose up -d
-./mvnw spring-boot:run
+./start.sh
 ```
 
 ## Acesso
@@ -15,3 +15,7 @@ Ex.: GET http://localhost:8090/ufs
 
 - Java 17.x
 - Docker
+
+## Execucao automatica
+
+O script `start.sh` aplica as configuracoes de Java automaticamente (quando possivel) e valida a versao antes de iniciar.

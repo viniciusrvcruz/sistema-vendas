@@ -96,8 +96,8 @@ public class FornecedorService {
 
     private void validarEmailDuplicado(String emailfornecedor, Integer codfornecedorAtual) {
         boolean emailDuplicado = codfornecedorAtual == null
-                ? fornecedorRepository.emailFornecedorExiste(emailfornecedor)
-                : fornecedorRepository.existePorEmailfornecedorEByCodfornecedorNao(emailfornecedor, codfornecedorAtual);
+                ? fornecedorRepository.existsByEmailfornecedor(emailfornecedor)
+                : fornecedorRepository.existsByEmailfornecedorAndCodfornecedorNot(emailfornecedor, codfornecedorAtual);
 
         if (emailDuplicado) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "E-mail de fornecedor já cadastrado");

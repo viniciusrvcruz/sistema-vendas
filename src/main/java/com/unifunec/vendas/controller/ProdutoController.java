@@ -29,13 +29,13 @@ public class ProdutoController {
     }
 
     @PostMapping()
-    public Produto postFornecedor(@Valid @RequestBody ProdutoForm produtoForm) {
+    public Produto postProduto(@Valid @RequestBody ProdutoForm produtoForm) {
         return produtoService.salvaProduto(produtoForm);
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public Produto putFornecedor(@Valid @RequestBody ProdutoForm produtoForm, @PathVariable Integer id) {
+    public Produto putProduto(@Valid @RequestBody ProdutoForm produtoForm, @PathVariable Integer id) {
         return produtoService.atualizaProduto(produtoForm, id);
     }
 

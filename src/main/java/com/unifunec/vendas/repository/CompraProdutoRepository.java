@@ -7,6 +7,9 @@ import com.unifunec.vendas.models.CompraProduto;
 import com.unifunec.vendas.models.CompraProdutoPK;
 
 @Repository
-public interface CompraProdutoRepository extends JpaRepository<CompraProduto, CompraProdutoPK>{
-    
+public interface CompraProdutoRepository extends JpaRepository<CompraProduto, CompraProdutoPK> {
+
+    boolean existsByCompra_Codcompra(Long codcompra);
+
+    boolean existsByProduto_Codproduto(Long codproduto);
 }

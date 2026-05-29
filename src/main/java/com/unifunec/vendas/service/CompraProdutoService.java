@@ -6,9 +6,13 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.unifunec.vendas.models.Compra;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.unifunec.vendas.forms.CompraProdutoAtualizacaoForm;
+import com.unifunec.vendas.forms.CompraProdutoForm;
 import com.unifunec.vendas.models.CompraProduto;
-import com.unifunec.vendas.models.Produto;
+import com.unifunec.vendas.models.CompraProdutoPK;
 import com.unifunec.vendas.repository.CompraProdutoRepository;
 
 import java.util.List;
@@ -20,36 +24,55 @@ public class CompraProdutoService {
     @Autowired
     private CompraProdutoRepository repository;
 
+    @Autowired
+    private CompraService compraService;
+
+    @Autowired
+    private ProdutoService produtoService;
+
     @Transactional
-    public CompraProduto salvar(CompraProduto novoItem) {
-    // 1. Garantir que a Compra e o Produto sejam instanciados 
-    // para satisfazer o @MapsId, usando os IDs vindos na PK
-    Long codCompra = novoItem.getId().getCodcomprafk();
-    Long codProduto = novoItem.getId().getCodprodutofk();
+    public CompraProduto salvar(CompraProdutoForm form) {
+        CompraProdutoPK id = new CompraProdutoPK(form.getCodcomprafk(), form.getCodprodutofk());
 
-    // Criamos proxies (referências) para que o JPA consiga mapear o ID
-    Compra compraProxy = new Compra();
-    compraProxy.setCodcompra(codCompra);
-    novoItem.setCompra(compraProxy);
+        Optional<CompraProduto> itemExistente = repository.findById(id);
 
-    Produto produtoProxy = new Produto();
-    produtoProxy.setCodproduto(codProduto);
-    novoItem.setProduto(produtoProxy);
+        if (itemExistente.isPresent()) {
+            CompraProduto itemParaAtualizar = itemExistente.get();
+            itemParaAtualizar.setQuantidade(itemParaAtualizar.getQuantidade() + form.getQuantidade());
+            itemParaAtualizar.setValorcp(form.getValorcp());
+            return repository.save(itemParaAtualizar);
+        } else {
+            CompraProduto novoItem = new CompraProduto(id, form.getQuantidade(), form.getValorcp());
 
-    // 2. Lógica de Update ou Insert (como conversamos antes)
-    Optional<CompraProduto> itemExistente = repository.findById(novoItem.getId());
+            novoItem.setCompra(compraService.getCompraId(form.getCodcomprafk()));
+            novoItem.setProduto(produtoService.getProdutoId(form.getCodprodutofk()));
 
-    if (itemExistente.isPresent()) {
-        CompraProduto itemParaAtualizar = itemExistente.get();
-        itemParaAtualizar.setQuantidade(itemParaAtualizar.getQuantidade() + novoItem.getQuantidade());
-        itemParaAtualizar.setValorcp(novoItem.getValorcp());
-        return repository.save(itemParaAtualizar);
-    } else {
-        return repository.save(novoItem);
+            return repository.save(novoItem);
+        }
     }
-}
 
     public List<CompraProduto> listarTodos() {
         return repository.findAll();
+    }
+
+    public CompraProduto buscarPorId(Long codCompra, Long codProduto) {
+        return repository.findById(new CompraProdutoPK(codCompra, codProduto))
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Item da compra não encontrado"));
+    }
+
+    @Transactional
+    public CompraProduto atualizar(CompraProdutoAtualizacaoForm form, Long codCompra, Long codProduto) {
+        CompraProduto item = buscarPorId(codCompra, codProduto);
+        item.setQuantidade(form.getQuantidade());
+        item.setValorcp(form.getValorcp());
+
+        return repository.save(item);
+    }
+
+    @Transactional
+    public void excluir(Long codCompra, Long codProduto) {
+        CompraProduto item = buscarPorId(codCompra, codProduto);
+        repository.delete(item);
     }
 }

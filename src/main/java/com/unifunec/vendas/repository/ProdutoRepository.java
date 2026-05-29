@@ -3,6 +3,6 @@ package com.unifunec.vendas.repository;
 import com.unifunec.vendas.models.Produto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProdutoRepository  extends JpaRepository<Produto, Integer> {
+public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
 }
